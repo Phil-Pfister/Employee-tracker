@@ -29,7 +29,7 @@ const initPrompt = () => {
       name: 'selection',
       message: 'What would you like to do?',
       choices: ['View All Departments', 'Add Department', 'View All Employees', 'Add Employee',
-        'Update Employee Role', 'View All Roles', 'Add Role', 'View Employees by Manager', 'Quit'],
+        'Update Employee Role', 'View All Roles', 'Add Role', 'View Employees by Manager', 'View Department Budget', 'Quit'],
     }
   ])
     .then((data) => {
@@ -49,6 +49,8 @@ const initPrompt = () => {
         addRole();
       } else if (data.selection === 'View Employees by Manager') {
         employeesByManager();
+      } else if (data.selection === 'View Department Budget') {
+        viewBudget();
       } else if (data.selection === 'Quit') {
         console.log('Goodbye');
         process.exit();
@@ -181,9 +183,7 @@ const addDepartment = () => {
         SELECT MAX(id)+1, '${data.newDept}' FROM departments;`
       )
         .then(() => {
-
-          dept.push(data.newDept);
-          console.log(dept);
+          
           console.log(`Department ${data.newDept} added successfully`)
 
         })
@@ -359,7 +359,38 @@ const employeesByManager = () => {
     })
     
     
-  })
-}
+  });
+};
+
+const viewBudget = () => {
+  db.query('SELECT * FROM departments', function (err, results) {
+    let dept = results.map((department =>
+      ({
+        name: department.name,
+        value: department.id
+      })
+      ));
+      inquirer.prompt([
+        {
+          type: 'list',
+          name: 'deptSum',
+          message: `Which department's budget would you like to view?`,
+          choices: dept
+        }
+      ])
+      .then((data) => {
+        db.promise().query(`SELECT SUM(salary)
+        FROM roles
+        INNER JOIN departments on roles.department_id = departments.id
+        WHERE departments.id = ?;`, data.deptSum)
+        .then(([rows]) => {
+          console.table(rows);
+          initPrompt();
+        })
+      });
+
+  });
+};
+
 init();
 
