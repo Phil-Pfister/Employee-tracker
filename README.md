@@ -25,7 +25,7 @@
  
   ## Installation  
   -------------------
-  Clone the repo to your machine and run `npm i` to load dependencies and then run `mysql -u root -p` to start mysql. Run `source schema` and `source seeds` to create and populate the staff database. Quit mysql (`quit`) and run `node index.js` to start the application.
+  Clone the repo to your machine and run `npm i` to load dependencies and then run `mysql -u root -p` to start mysql. Run `source db/schema.sql` and `source db/seeds.sql` to create and populate the staff database. Quit mysql (`quit`) and run `node index.js` to start the application.
 
   ## Credits 
   ------------------

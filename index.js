@@ -1,7 +1,9 @@
 // const express = require('espress');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
+const chalk = require('chalk');
 require('console.table');
+
 
 
 const db = mysql.createConnection({
@@ -12,13 +14,13 @@ const db = mysql.createConnection({
 });
 
 const init = () => {
-  console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-  console.log('@                                  @')
-  console.log('@                                  @')
-  console.log('@     --   STAFF DATABASE   --     @')
-  console.log('@                                  @')
-  console.log('@                                  @')
-  console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+  console.log(chalk.green('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'))
+  console.log(chalk.green('@                                  @'))
+  console.log(chalk.green('@                                  @'))
+  console.log(chalk.green('@     --   STAFF DATABASE   --     @'))
+  console.log(chalk.green('@                                  @'))
+  console.log(chalk.green('@                                  @'))
+  console.log(chalk.green('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'))
   initPrompt();
 };
 
@@ -58,10 +60,8 @@ const initPrompt = () => {
 
     })
     .catch((error) => {
-      if (error.isTtyError) {
-        // Prompt couldn't be rendered in the current environment
-      } else {
-        // Something else went wrong
+      if (error) {
+        console.log(error);
       }
     });
 }
@@ -71,7 +71,7 @@ const showDepartments = () => {
   db.promise().query(
     `SELECT * FROM departments`)
     .then(([rows]) => {
-      console.log('\nViewing All Departments...\n');
+      console.log(chalk.yellowBright('\nViewing All Departments...\n'));
       console.table(rows);
       initPrompt();
     });
@@ -88,7 +88,7 @@ const showEmployees = () => {
     LEFT JOIN departments ON roles.department_id = departments.id
     LEFT JOIN employees manager ON employees.manager_id = manager.id;`)
     .then(([rows]) => {
-      console.log('Viewing All Employees...');
+      console.log(chalk.yellowBright('Viewing All Employees'));
       console.table(rows);
       initPrompt();
     })
@@ -100,7 +100,7 @@ const showRoles = () => {
       FROM roles
       INNER JOIN departments ON roles.department_id = departments.id;`)
     .then(([rows]) => {
-      console.log('Viewing All Roles...');
+      console.log(chalk.yellowBright('Viewing All Roles'));
       console.table(rows);
       initPrompt();
     })
@@ -123,9 +123,6 @@ const addRole = () => {
     })
 
     ));
-    // managers.push('none');
-
-
     inquirer.prompt([
       {
         type: 'input',
@@ -150,7 +147,7 @@ const addRole = () => {
           
         )
           .then(() => {
-            console.log(`New role added successfully`)
+            console.log(chalk.yellowBright(`New role added successfully`))
 
           })
           .then(() => {
@@ -184,7 +181,7 @@ const addDepartment = () => {
       )
         .then(() => {
           
-          console.log(`Department ${data.newDept} added successfully`)
+          console.log(chalk.yellowBright(`Department ${data.newDept} added successfully`))
 
         })
         .then(() => {
@@ -216,7 +213,6 @@ const addEmployee = () => {
       })
 
       ));
-      // managers.push('none');
 
 
       inquirer.prompt([
@@ -254,7 +250,7 @@ const addEmployee = () => {
             }
           )
             .then(() => {
-              console.log(`Employee ${data.firstName} ${data.lastName} added successfully`)
+              console.log(chalk.yellowBright(`Employee ${data.firstName} ${data.lastName} added successfully`))
 
             })
             .then(() => {
@@ -277,7 +273,7 @@ const updateRole = () => {
       value: roles.id
     })
     ));
-    console.log(role);
+    
     db.query('SELECT * FROM employees', function (err, results) {
       let employees = results.map((employee =>
       ({
@@ -286,9 +282,6 @@ const updateRole = () => {
       })
 
       ));
-      // managers.push('none');
-
-
       inquirer.prompt([
         {
           type: 'list',
@@ -311,8 +304,8 @@ const updateRole = () => {
              
           )
             .then(() => {
-              console.log({id: data.employee});
-              console.log(`Updated employee's role`)
+              
+              console.log(chalk.yellowBright(`Updated employee's role`))
 
             })
             .then(() => {
@@ -352,7 +345,7 @@ const employeesByManager = () => {
       LEFT JOIN roles ON employees.role_id = roles.id
       WHERE manager_id = ?;`, data.manager)
       .then(([rows]) => {
-        console.log('Here is a list of their employees');
+        console.log(chalk.yellowBright('Here is a list of their employees'));
         console.table(rows);
         initPrompt();
       })

@@ -27,6 +27,6 @@ CREATE TABLE employees (
     FOREIGN KEY (manager_id) REFERENCES employees(id)
 );
 
-source db/seeds.sql
+
 
 
