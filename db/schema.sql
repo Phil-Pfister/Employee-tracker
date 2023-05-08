@@ -24,9 +24,9 @@ CREATE TABLE employees (
     role_id INT,
     FOREIGN KEY (role_id) REFERENCES roles(id),
     manager_id INT,
-    INDEX manager_ind (manager_id),
     FOREIGN KEY (manager_id) REFERENCES employees(id)
 );
 
+source db/seeds.sql
 
 
