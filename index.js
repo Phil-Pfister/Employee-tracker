@@ -81,12 +81,12 @@ const showDepartments = () => {
 
 // query to show all employees
 const showEmployees = () => {
-  db.promise().query(
-    `SELECT employees.last_name, employees.first_name, roles.title, departments.name AS departments, roles.salary, CONCAT (manager.last_name, ", ", manager.first_name) AS manager
-    FROM employees
-    LEFT JOIN roles ON employees.role_id = roles.id
-    LEFT JOIN departments ON roles.department_id = departments.id
-    LEFT JOIN employees manager ON employees.manager_id = manager.id;`)
+  let sql = `SELECT CONCAT (employees.last_name, ', ', employees.first_name) AS Employee, roles.title, departments.name AS departments, roles.salary, CONCAT (manager.first_name, " ", manager.last_name) AS manager
+  FROM employees
+  LEFT JOIN roles ON employees.role_id = roles.id
+  LEFT JOIN departments ON roles.department_id = departments.id
+  LEFT JOIN employees manager ON employees.manager_id = manager.id;`
+  db.promise().query(sql)
     .then(([rows]) => {
       console.log(chalk.yellowBright('Viewing All Employees'));
       console.table(rows);

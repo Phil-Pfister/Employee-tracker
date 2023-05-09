@@ -31,6 +31,6 @@ CREATE TABLE employees (
 
 
 
-source db/seeds.sql
+
 
 

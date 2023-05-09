@@ -17,7 +17,7 @@
   -------------------
   This application uses Node js and mysql to generate and manipulate an employee database. Once you run the schema.sql and seeds.sql to create and define the staff database you can run node js to view the database tables . you can then add departments, employees and roles.   You can also view employees by manager or view the budget of a selected department. You can view a walkthrough video of how the application works here: 
   
-  [walkthrough video](https://drive.google.com/file/d/1uulPtaWandElWeqFr1ifDxOURYdytF17/view?usp=sharing)
+  [walkthrough video](https://drive.google.com/file/d/1KkErklLNhJ6U05f7fw71F2YpR0r8rSIe/view?usp=share_link)
 
   ## Usage  
   ------------
