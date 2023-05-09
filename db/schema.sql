@@ -5,12 +5,12 @@ CREATE DATABASE staff_db;
 USE staff_db;
 
 CREATE TABLE departments (
-    id INT PRIMARY KEY NOT NULL,
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     name VARCHAR(30)
 );
 
 CREATE TABLE roles (
-    id INT PRIMARY KEY NOT NULL,
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     title VARCHAR(30) NOT NULL,
     salary DECIMAL,
     department_id INT,
@@ -24,9 +24,13 @@ CREATE TABLE employees (
     role_id INT,
     FOREIGN KEY (role_id) REFERENCES roles(id),
     manager_id INT,
-    FOREIGN KEY (manager_id) REFERENCES employees(id)
+    FOREIGN KEY (manager_id) REFERENCES employees(id) 
+    
+    
 );
 
 
+
+source db/seeds.sql
 
 

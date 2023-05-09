@@ -142,10 +142,9 @@ const addRole = () => {
       }
     ])
       .then((data) => {
-        db.promise().query(
-          ` INSERT INTO roles (id, title, salary, department_id) SELECT MAX(id)+1, ?, ?, ? from roles`, ([data.role, data.salary, data.department])
-          
-        )
+        let params = [data.role, data.salary, data.department]
+        let sql = ` INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`;
+        db.promise().query(sql, params)
           .then(() => {
             console.log(chalk.yellowBright(`New role added successfully`))
 
@@ -153,6 +152,8 @@ const addRole = () => {
           .then(() => {
             initPrompt();
           })
+          .catch((err) =>
+          console.log('Error creating role'))
       })
       .catch((err) => {
         console.log(err);
@@ -174,11 +175,9 @@ const addDepartment = () => {
     }
   ])
     .then((data) => {
-
-      db.promise().query(
-        ` INSERT INTO departments (id, name)
-        SELECT MAX(id)+1, '${data.newDept}' FROM departments;`
-      )
+      let sql = `INSERT INTO departments (name) VALUE (?);`;
+      let params = [data.newDept];
+      db.promise().query(sql, params)
         .then(() => {
           
           console.log(chalk.yellowBright(`Department ${data.newDept} added successfully`))
@@ -211,9 +210,9 @@ const addEmployee = () => {
         name: manager.first_name + ' ' + manager.last_name,
         value: manager.id
       })
-
+        
       ));
-
+      managers.push('none');
 
       inquirer.prompt([
         {
@@ -240,15 +239,18 @@ const addEmployee = () => {
         }
       ])
         .then((data) => {
-          db.promise().query(
-            ` INSERT INTO employees set ?`,
-            {
-              first_name: data.firstName,
-              last_name: data.lastName,
-              role_id: data.role,
-              manager_id: data.mgrName
-            }
-          )
+          
+          let params =  {
+            first_name: data.firstName,
+            last_name: data.lastName,
+            role_id: data.role,
+            manager_id: data.mgrName
+          }
+          if (data.mgrName === 'none') {
+            params = { first_name: data.firstName, last_name: data.lastName, role_id: data.role}
+          };
+          let sql = `INSERT INTO employees set ?`
+          db.promise().query(sql, params)
             .then(() => {
               console.log(chalk.yellowBright(`Employee ${data.firstName} ${data.lastName} added successfully`))
 
@@ -340,10 +342,12 @@ const employeesByManager = () => {
       }
     ])
     .then((data) => {
-      db.promise().query(`SELECT employees.first_name, employees.last_name, roles.title 
+      let sql = `SELECT CONCAT (employees.first_name, " ", employees.last_name) AS Employee, roles.title 
       FROM employees
       LEFT JOIN roles ON employees.role_id = roles.id
-      WHERE manager_id = ?;`, data.manager)
+      WHERE manager_id = ?;`;
+
+      db.promise().query(sql, data.manager)
       .then(([rows]) => {
         console.log(chalk.yellowBright('Here is a list of their employees'));
         console.table(rows);
@@ -372,10 +376,11 @@ const viewBudget = () => {
         }
       ])
       .then((data) => {
-        db.promise().query(`SELECT SUM(salary)
+        let sql = `SELECT departments.name as Department, SUM(salary) AS Budget
         FROM roles
-        INNER JOIN departments on roles.department_id = departments.id
-        WHERE departments.id = ?;`, data.deptSum)
+        LEFT JOIN departments on roles.department_id = departments.id
+        WHERE departments.id = ?;`
+        db.promise().query(sql, data.deptSum)
         .then(([rows]) => {
           console.table(rows);
           initPrompt();
