@@ -1,4 +1,4 @@
-// const express = require('espress');
+
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
@@ -54,7 +54,7 @@ const initPrompt = () => {
       } else if (data.selection === 'View Department Budget') {
         viewBudget();
       } else if (data.selection === 'Quit') {
-        console.log('Goodbye');
+        console.log(chalk.magentaBright('Goodbye'));
         process.exit();
       }
 
